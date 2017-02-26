@@ -1,0 +1,61 @@
+'use strict';
+var Alexa = require('alexa-sdk');
+
+var APP_ID = undefined; //OPTIONAL: replace with "amzn1.echo-sdk-ams.app.[your-unique-value-here]";
+var SKILL_NAME = 'Vietnam Facts';
+
+/**
+ * Array containing space facts.
+ */
+var FACTS = [
+    "Vietnam, officially the Socialist Republic of Vietnam (SRV; Vietnamese: Cộng hòa Xã hội chủ nghĩa Việt Nam (About this sound listen)), is the easternmost country on the Indochina Peninsula in Southeast Asia.",
+    "Estimated population of 90 milliion people.",
+    "Capital City Hanoi.",
+    "Used to be part of Imperial China.",
+    "Largest City Ho Chi Minh city.",
+    "official language vietnamese.",
+    "Largest ethnic group Kinh",
+    "independence from france 2 Septermber 1945.",
+    "Vietnam is bordered by China to the north, Laos to the northwest, Cambodia to the southwest, and Malaysia across the South China Sea to the southeast.",
+    "currency vietnamese dong.",
+    "founding father ho chi minh.",
+    "In May 2016, President Obama further normalized relations with Vietnam after he announced the lifting of an arms embargo on sales of lethal arms to Vietnam.",
+    "Vietnam is divided into 58 provinces."
+];
+
+exports.handler = function(event, context, callback) {
+    var alexa = Alexa.handler(event, context);
+    alexa.APP_ID = APP_ID;
+    alexa.registerHandlers(handlers);
+    alexa.execute();
+};
+
+var handlers = {
+    'LaunchRequest': function () {
+        this.emit('GetFact');
+    },
+    'GetNewFactIntent': function () {
+        this.emit('GetFact');
+    },
+    'GetFact': function () {
+        // Get a random space fact from the space facts list
+        var factIndex = Math.floor(Math.random() * FACTS.length);
+        var randomFact = FACTS[factIndex];
+
+        // Create speech output
+        var speechOutput = "Here's your fact: " + randomFact;
+
+        this.emit(':tellWithCard', speechOutput, SKILL_NAME, randomFact)
+    },
+    'AMAZON.HelpIntent': function () {
+        var speechOutput = "You can say tell me a Vietnam fact, or, you can say exit... What can I help you with?";
+        var reprompt = "What can I help you with?";
+        this.emit(':ask', speechOutput, reprompt);
+    },
+    'AMAZON.CancelIntent': function () {
+        this.emit(':tell', 'Goodbye!');
+    },
+    'AMAZON.StopIntent': function () {
+        this.emit(':tell', 'Goodbye!');
+    }
+};
