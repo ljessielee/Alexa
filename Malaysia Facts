@@ -1,0 +1,61 @@
+'use strict';
+var Alexa = require('alexa-sdk');
+
+var APP_ID = undefined; //OPTIONAL: replace with "amzn1.echo-sdk-ams.app.[your-unique-value-here]";
+var SKILL_NAME = 'Malaysia Facts';
+
+/**
+ * Array containing space facts.
+ */
+var FACTS = [
+    "Malaysia is a federal constitutional monarchy located in Southeast Asia.",
+    "It consists of thirteen states and three federal territories.",
+    "has a total landmass of 330,803 square kilometres (127,720 sq mi) separated by the South China Sea into two similarly sized regions, Peninsular Malaysia and East Malaysia (Malaysian Borneo).",
+    "Peninsular Malaysia shares a land and maritime border with Thailand and maritime borders with Singapore, Vietnam, and Indonesia. East Malaysia shares land and maritime borders with Brunei and Indonesia and a maritime border with the Philippines and Vietnam.",
+    "The capital city is Kuala Lumpur, while Putrajaya is the seat of the federal government.",
+    "It is the 44th populous country in the world.",
+    "It was founded on August 31, 1957.",
+    "About half the population is ethnically Malay, with large minorities of Malaysian Chinese, Malaysian Indians, and indigenous peoples.",
+    "The constitution declares Islam the state religion while allowing freedom of religion for non-Muslims",
+    "Malaysia is a federal constitutional elective monarchy, and the only federation in Southeast Asia.",
+    "The system of government is closely modelled on that of the Westminster parliamentary system, a legacy of British colonial rule",
+    "Malaysia is the 66th largest country by total land area, with a land area of 329,613 km2 (127,264 sq mi).",
+    "The official and national language of Malaysia is Malaysian,[2] a standardised form of the Malay language."
+];
+
+exports.handler = function(event, context, callback) {
+    var alexa = Alexa.handler(event, context);
+    alexa.APP_ID = APP_ID;
+    alexa.registerHandlers(handlers);
+    alexa.execute();
+};
+
+var handlers = {
+    'LaunchRequest': function () {
+        this.emit('GetFact');
+    },
+    'GetNewFactIntent': function () {
+        this.emit('GetFact');
+    },
+    'GetFact': function () {
+        // Get a random space fact from the space facts list
+        var factIndex = Math.floor(Math.random() * FACTS.length);
+        var randomFact = FACTS[factIndex];
+
+        // Create speech output
+        var speechOutput = "Here's your fact: " + randomFact;
+
+        this.emit(':tellWithCard', speechOutput, SKILL_NAME, randomFact)
+    },
+    'AMAZON.HelpIntent': function () {
+        var speechOutput = "You can say tell me a Malaysia fact, or, you can say exit... What can I help you with?";
+        var reprompt = "What can I help you with?";
+        this.emit(':ask', speechOutput, reprompt);
+    },
+    'AMAZON.CancelIntent': function () {
+        this.emit(':tell', 'Goodbye!');
+    },
+    'AMAZON.StopIntent': function () {
+        this.emit(':tell', 'Goodbye!');
+    }
+};
