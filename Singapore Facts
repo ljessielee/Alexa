@@ -1,0 +1,60 @@
+'use strict';
+var Alexa = require('alexa-sdk');
+
+var APP_ID = undefined; //OPTIONAL: replace with "amzn1.echo-sdk-ams.app.[your-unique-value-here]";
+var SKILL_NAME = 'Singapore Facts';
+
+/**
+ * Array containing space facts.
+ */
+var FACTS = [
+    "Singapore, officially the Republic of Singapore, and often referred to as the Lion City, the Garden City, and the Red Dot, is a global city and sovereign state in Southeast Asia and the world's only island city-state.",
+    "It is founded on August 9, 1965.",
+    " It lies one degree (137 km) north of the equator, south to the southernmost tip of continental Asia and peninsular Malaysia, with Indonesia's Riau Islands to the south.",
+    "Singapore's territory consists of a diamond-shaped main island along with 62 other islets. Since independence, extensive land reclamation has increased its total size by 23% (130 km2).",
+    "In 1819, Sir Stamford Raffles founded colonial Singapore as a trading post of the East India Company.",
+    "Singapore's best known global brands include Singapore Airlines (SIA) and Changi Airport, both amongst the most-awarded in their industry.",
+    "For the past decade, it has been the only Asian country with the top AAA sovereign rating from all major credit rating agencies, including S&P, Moody's and Fitch",
+    "Singapore is home to 5.5 million residents, 38% of whom are permanent residents and other foreign nationals.",
+    "Singaporeans are mostly bilingual in a mother-tongue language and English as their common language.",
+    "Singapore's founding father is Mr Lee Kuan Yew",
+    "Singapore is a unitary, multiparty, parliamentary republic, with a Westminster system of unicameral parliamentary government.",
+    "Singapore is one of the five founding members of the ASEAN,"
+];
+
+exports.handler = function(event, context, callback) {
+    var alexa = Alexa.handler(event, context);
+    alexa.APP_ID = APP_ID;
+    alexa.registerHandlers(handlers);
+    alexa.execute();
+};
+
+var handlers = {
+    'LaunchRequest': function () {
+        this.emit('GetFact');
+    },
+    'GetNewFactIntent': function () {
+        this.emit('GetFact');
+    },
+    'GetFact': function () {
+        // Get a random space fact from the space facts list
+        var factIndex = Math.floor(Math.random() * FACTS.length);
+        var randomFact = FACTS[factIndex];
+
+        // Create speech output
+        var speechOutput = "Here's your fact: " + randomFact;
+
+        this.emit(':tellWithCard', speechOutput, SKILL_NAME, randomFact)
+    },
+    'AMAZON.HelpIntent': function () {
+        var speechOutput = "You can say tell me a Singapore fact, or, you can say exit... What can I help you with?";
+        var reprompt = "What can I help you with?";
+        this.emit(':ask', speechOutput, reprompt);
+    },
+    'AMAZON.CancelIntent': function () {
+        this.emit(':tell', 'Goodbye!');
+    },
+    'AMAZON.StopIntent': function () {
+        this.emit(':tell', 'Goodbye!');
+    }
+};
